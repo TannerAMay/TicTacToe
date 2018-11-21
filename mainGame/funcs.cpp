@@ -1,4 +1,4 @@
-#include "funcs.h"
+﻿#include "funcs.h"
 
 char ** buildBoard()
 {
@@ -136,6 +136,11 @@ bool solved(char ** &board, char player)
   return 0;
 }
 
+bool emptySlot(char ** &board, int r, int c)
+{
+  return board[r][c] == ' ';
+}
+
 bool play2(char ** &board, char player)
 {
   if(full(board))
@@ -152,7 +157,7 @@ bool play2(char ** &board, char player)
       cin >> pR;
       cout << "c: ";
       cin >>pC;
-    }while(pR < 0 || pR > 2 || pC < 0 || pC > 2);
+    }while((pR < 0 || pR > 2 || pC < 0 || pC > 2) || !emptySlot(board, pR, pC));
 
     board[pR][pC] = 'x';
   }
@@ -165,7 +170,7 @@ bool play2(char ** &board, char player)
       cin >> pR;
       cout << "c: ";
       cin >>pC;
-    }while(pR < 0 || pR > 2 || pC < 0 || pC > 2);
+    }while((pR < 0 || pR > 2 || pC < 0 || pC > 2) || !emptySlot(board, pR, pC));
 
     board[pR][pC] = 'o';
   }
@@ -207,7 +212,7 @@ bool play1(char ** &board, char player)
       pR = 0;
       pC = 0;
       //tannerAI(board, pR, pC, 0, choice);
-    }while(pR < 0 || pR > 2 || pC < 0 || pC > 2);
+    }while((pR < 0 || pR > 2 || pC < 0 || pC > 2) || !emptySlot(board, pR, pC));
 
     board[pR][pC] = 'x';
   }
@@ -220,7 +225,7 @@ bool play1(char ** &board, char player)
       cin >> pR;
       cout << "c: ";
       cin >>pC;
-    }while(pR < 0 || pR > 2 || pC < 0 || pC > 2);
+    }while((pR < 0 || pR > 2 || pC < 0 || pC > 2) || !emptySlot(board, pR, pC));
 
     board[pR][pC] = 'o';
   }
@@ -263,7 +268,7 @@ bool play0(char ** &board, char player)
       pR = 0;
       pC = 0;
       //tannerAI(board, pR, pC, 0, choice);
-    }while(pR < 0 || pR > 2 || pC < 0 || pC > 2);
+    }while((pR < 0 || pR > 2 || pC < 0 || pC > 2) || !emptySlot(board, pR, pC));
 
     board[pR][pC] = 'x';
   }
@@ -274,7 +279,7 @@ bool play0(char ** &board, char player)
       pR = 0;
       pC = 0;
       //gavinAI(board, pR, pC);
-    }while(pR < 0 || pR > 2 || pC < 0 || pC > 2);
+    }while((pR < 0 || pR > 2 || pC < 0 || pC > 2) || !emptySlot(board, pR, pC));
 
     board[pR][pC] = 'o';
   }

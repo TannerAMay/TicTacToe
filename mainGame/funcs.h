@@ -1,4 +1,4 @@
-#ifndef FUNCS_H
+﻿#ifndef FUNCS_H
 #define FUNCS_H
 
 #include <iostream>
@@ -17,6 +17,7 @@ void deleteBoard(char ** &board);
 void setBoard(char ** &board);
 bool full(char ** &board);
 bool solved(char ** &board, char player);
+bool emptySlot(char ** &board, int r, int c);
 
 bool play2(char ** &board, char player);
 bool play1(char ** &board, char player);
