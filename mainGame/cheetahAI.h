@@ -69,28 +69,35 @@ void CheetahAI::updateMyBoard(char ** &board) {
 
 }
 
-
+// playGame(board,pR,pC,0,'x') <- x or o depending who i am
 // This function gets called from the main loop
 // Makes a move based on the current board state aka the emptySpaces
-void CheetahAI::playGame(char ** &board, int &pR, int &pC) {
+void CheetahAI::playGame(char ** &board, int &pR, int &pC, int &val, const char player) {
   // First
   updateMyBoard(board);
 
   int currMax;
-  int val;
   int bestSpace; // Represents the best space
+  char winner;
 
   if (emptySpaces.size() == 0) { // The board is full
     return;
   } else {
     currMax = 0;
     for (int i = 0; i < emptySpaces.size(); i++ ) { // i is
-      val = 0;
-      myBoard[emptySpaces[i]] = whoami;
-      grnHelper(otherPlayer(whoami),val); // Returns the val of choosing this space
-      myBoard[emptySpaces[i] = ' '];
-      if (val > currMax) {
-        bestSpace = emptySpaces[i];
+      if (player == whoami) { // choosing my move
+        val = 0;
+        myBoard[emptySpaces[i]] = whoami;
+        playGame(board,pR,pC,val,otherPlayer(player)); // Returns the val of choosing this space
+        winner = isSolved;
+        // assign values here
+        myBoard[emptySpaces[i] = ' '];
+        if (val > currMax) {
+          bestSpace = emptySpaces[i];
+        }
+
+      } else {
+
       }
     }
   }

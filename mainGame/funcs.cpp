@@ -141,6 +141,12 @@ bool emptySlot(char ** &board, int r, int c)
   return board[r][c] == ' ';
 }
 
+char swapPlayer(const char player) {
+  if (player == 'x')
+    return 'o';
+  return 'x';
+}
+
 bool play2(char ** &board, char player)
 {
   if(full(board))
@@ -193,59 +199,45 @@ bool play2(char ** &board, char player)
   throw "Something terrible has happened.";
 }
 
-bool play1(char ** &board, char player)
+bool play1(char ** &board)
 {
   static map<int, int> choice;
-  CheetahAI gav('x');
+  const char AI_PLAYER = 'x';
 
-  if(full(board))
-  {
-    //tannerAI(board, pR, pC, 1, choice);
-    return 0;
-  }
-
+  char player = 'x'; // Who starts
   int pR, pC;
+  //CheetahAI gav(CHEETAH); // Initialize me with who I am
 
-  if(player == 'x')
-  {
-    do
-    {
-      pR = 0;
-      pC = 0;
-      //tannerAI(board, pR, pC, 0, choice);
-    }while((pR < 0 || pR > 2 || pC < 0 || pC > 2) || !emptySlot(board, pR, pC));
+  while (!solved(board, player) || !full(board)) {
 
-    board[pR][pC] = 'x';
-  }
-  else
-  {
-    do
-    {
-      cout << "\nIt's your turn\n";
-      cout << "r: ";
-      cin >> pR;
-      cout << "c: ";
-      cin >>pC;
-    }while((pR < 0 || pR > 2 || pC < 0 || pC > 2) || !emptySlot(board, pR, pC));
+    if (player == AI_PLAYER) {
+      do {
+        //gav.playGame(board,pR,pC,0,CHEETAH);
+        cout << "Placeholder to compile" << endl;
+      } while ((pR < 0 || pR > 2 || pC < 0 || pC > 2) || !emptySlot(board, pR, pC));
+    } else { // Human
+      do {
+        cout << "\nIt's your turn\n";
+        cout << "r: ";
+        cin >> pR;
+        cout << "c: ";
+        cin >>pC;
+      } while ((pR < 0 || pR > 2 || pC < 0 || pC > 2) || !emptySlot(board, pR, pC));
+    }
 
-    board[pR][pC] = 'o';
+    board[pR][pC] = player;
+    player = swapPlayer(player);
   }
 
   cout << endl;
 
   printBoard(board);
 
-  if(solved(board, player))
-  {
-    cout << "Player " << player << " has won!\n";
-    //tannerAI(board, pR, pC, 1, choice);
-    return 1;
+  if (full(board) && solved(board, player)) {
+    cout << "Player " << player << " has won!" << endl;
+  } else {
+    return 0; // Tie is handled in main
   }
-
-  if(player == 'x')
-    return play1(board, 'o');
-  else
-    return play1(board, 'x');
 
   throw "Something terrible has happened.";
 }

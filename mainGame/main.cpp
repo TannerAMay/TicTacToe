@@ -45,10 +45,9 @@ int main()
 
       printBoard(board);
 
-      if(!play1(board, randPlayer()))
+      if(!play1(board))
       {
         cout << "Tie game\n";
-
       }
 
       break;

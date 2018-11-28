@@ -18,9 +18,10 @@ void setBoard(char ** &board);
 bool full(char ** &board);
 bool solved(char ** &board, char player);
 bool emptySlot(char ** &board, int r, int c);
+char swapPlayer(const char player);
 
 bool play2(char ** &board, char player);
-bool play1(char ** &board, char player);
+bool play1(char ** &boards);
 bool play0(char ** &board, char player);
 
 char randPlayer();
