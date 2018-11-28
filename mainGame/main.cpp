@@ -1,5 +1,6 @@
 #include "funcs.h"
 
+
 int main()
 {
   char **board = nullptr;
@@ -29,6 +30,8 @@ int main()
 
       printBoard(board);
 
+      int meme;
+      cin >> meme;
       if(!play0(board, randPlayer()))
       {
         cout << "Tie game\n";

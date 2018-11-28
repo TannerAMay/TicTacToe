@@ -1,4 +1,5 @@
 #include "funcs.h"
+#include "cheetahAI.h"
 
 char ** buildBoard()
 {
@@ -191,6 +192,7 @@ bool play2(char ** &board, char player)
 bool play1(char ** &board, char player)
 {
   static map<int, int> choice;
+  CheetahAI gav('x');
 
   if(full(board))
   {
@@ -207,6 +209,7 @@ bool play1(char ** &board, char player)
       pR = 0;
       pC = 0;
       //tannerAI(board, pR, pC, 0, choice);
+
     }while(pR < 0 || pR > 2 || pC < 0 || pC > 2);
 
     board[pR][pC] = 'x';
