@@ -44,11 +44,12 @@ int main()
       setBoard(board);
 
       printBoard(board);
-
+      cout << "Here" << endl;
       if(!play1(board))
       {
         cout << "Tie game\n";
       }
+      cout << "Out" << endl;
 
       break;
     case 2:

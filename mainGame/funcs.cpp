@@ -1,5 +1,5 @@
 ﻿#include "funcs.h"
-
+#include "cheetahAI.h"
 char ** buildBoard()
 {
   char **board = new char *[3];
@@ -78,60 +78,71 @@ bool full(char ** &board)
 
 bool solved(char ** &board, char player)
 {
-  int rDir[]{-1, -1, 0, 1, 1, 1, 0, -1};
-  int cDir[]{0, 1, 1, 1, 0, -1, -1, -1};
-
-  int rOgStep, cOgStep, rStep, cStep;
-
-  for(int r = 0; r < 3; r++)
-  {
-    for(int c = 0; c < 3; c++)
-    {
-      rOgStep = r;
-      cOgStep = c;
-
-      if(board[r][c] == player)
-      {
-        for(int d = 0; d < 8; d++)
-        {
-          for(int l = 1; l < 3; l++)
-          {
-            rStep = rOgStep + rDir[d];
-            cStep = cOgStep + cDir[d];
-
-            if(rStep < 3 && rStep > -1
-               && cStep < 3 && cStep > -1)
-            {
-              if(board[rStep][cStep] == player)
-              {
-                if(l == 2)
-                {
-                  return 1;
-                }
-                else if(l < 2)
-                {
-                  rOgStep = rStep;
-                  cOgStep = cStep;
-                }
-              }
-              else
-              {
-                l = 3;
-                rOgStep = r;
-                cOgStep = c;
-              }
-            }
-            else
-            {
-              l = 3;
-              rOgStep = r;
-              cOgStep = c;
-            }
-          }
-        }
+  if (board[0][0] == player && board[0][1] == player && board[0][2] == player ||
+      board[1][0] == player && board[1][1] == player && board[1][2] == player ||
+      board[2][0] == player && board[2][1] == player && board[2][2] == player ||
+      board[0][0] == player && board[1][0] == player && board[2][0] == player ||
+      board[0][1] == player && board[1][1] == player && board[2][1] == player ||
+      board[0][2] == player && board[1][2] == player && board[2][2] == player ||
+      board[0][0] == player && board[1][1] == player && board[2][2] == player ||
+      board[0][2] == player && board[1][1] == player && board[2][0] == player) {
+        return true;
       }
-    }
-  }
+  return false;
+  //int rDir[]{-1, -1, 0, 1, 1, 1, 0, -1};
+  //int cDir[]{0, 1, 1, 1, 0, -1, -1, -1};
+
+  //int rOgStep, cOgStep, rStep, cStep;
+
+  //for(int r = 0; r < 3; r++)
+  //{
+  //  for(int c = 0; c < 3; c++)
+  //  {
+  //    rOgStep = r;
+  //    cOgStep = c;
+
+  //    if(board[r][c] == player)
+  //    {
+  //      for(int d = 0; d < 8; d++)
+  //      {
+  //        for(int l = 1; l < 3; l++)
+  //        {
+  //          rStep = rOgStep + rDir[d];
+  //          cStep = cOgStep + cDir[d];
+
+  //          if(rStep < 3 && rStep > -1
+  //             && cStep < 3 && cStep > -1)
+  //          {
+  //            if(board[rStep][cStep] == player)
+  //            {
+  //              if(l == 2)
+  //              {
+  //                return 1;
+  //              }
+  //              else if(l < 2)
+  //              {
+  //                rOgStep = rStep;
+  //                cOgStep = cStep;
+  //              }
+  //            }
+  //            else
+  //            {
+  //              l = 3;
+  //              rOgStep = r;
+  //              cOgStep = c;
+  //            }
+  //          }
+  //          else
+  //          {
+  //            l = 3;
+  //            rOgStep = r;
+  //            cOgStep = c;
+  //          }
+  //        }
+  //      }
+  //    }
+  //  }
+  //}
 
   return 0;
 }
@@ -206,17 +217,21 @@ bool play1(char ** &board)
 
   char player = 'x'; // Who starts
   int pR, pC;
-  //CheetahAI gav(CHEETAH); // Initialize me with who I am
-
-  while (!solved(board, player) || !full(board)) {
+  int dumpster = 0; // Cause im dumb
+  CheetahAI gav(AI_PLAYER); // Initialize me with who I am
+  cout << "Game start" << endl;
+  do {
 
     if (player == AI_PLAYER) {
+      cout << "AI turn" << endl;
       do {
-        //gav.playGame(board,pR,pC,0,CHEETAH);
-        cout << "Placeholder to compile" << endl;
+        gav.playGame(board,pR,pC);
+        cout << pR << ", " << pC << endl;
+        cin >> dumpster;
       } while ((pR < 0 || pR > 2 || pC < 0 || pC > 2) || !emptySlot(board, pR, pC));
     } else { // Human
       do {
+        printBoard(board);
         cout << "\nIt's your turn\n";
         cout << "r: ";
         cin >> pR;
@@ -227,19 +242,20 @@ bool play1(char ** &board)
 
     board[pR][pC] = player;
     player = swapPlayer(player);
-  }
+  } while (!solved(board, player) || !full(board));
 
   cout << endl;
 
   printBoard(board);
 
-  if (full(board) && solved(board, player)) {
+  if (solved(board, player)) {
     cout << "Player " << player << " has won!" << endl;
+    return 1;
   } else {
     return 0; // Tie is handled in main
   }
 
-  throw "Something terrible has happened.";
+  //throw "Something terrible has happened.";
 }
 
 bool play0(char ** &board, char player)
