@@ -19,7 +19,7 @@ class CheetahAI {
     char whoami; // Whcih piece I am
 
 
-    void grnHelper(const char player, int &val);
+    void grnHelper(const char player, int &pR, int &pC, int &val);
     // Recursive function called from playGame(). Will determine the value of
     // the given move. Player keeps track of the next player's turn.
 
@@ -56,6 +56,7 @@ CheetahAI::CheetahAI(const char me) {
 void CheetahAI::updateMyBoard(char ** &board) {
   int count = 0;
   myBoard;
+  emptySpaces.clear();
 
   for (int r = 0; r <= 2; r++) {
     for (int c = 0; c <= 2; c++) {
@@ -66,42 +67,73 @@ void CheetahAI::updateMyBoard(char ** &board) {
       count++;
     }
   }
-
 }
+
+
 
 // playGame(board,pR,pC,0,'x') <- x or o depending who i am
 // This function gets called from the main loop
 // Makes a move based on the current board state aka the emptySpaces
-void CheetahAI::playGame(char ** &board, int &pR, int &pC, int &val, const char player) {
+void CheetahAI::playGame(char ** &board, int &pR, int &pC) {
   // First
   updateMyBoard(board);
 
   int currMax;
   int bestSpace; // Represents the best space
   char winner;
+  int val = 0;
+  cout << "Start" << endl;
+  cout << emptySpaces.size() << endl;
+
+  grnHelper(whoami,pR,pC,val);
+  // Now I should have the index of the best space in bestSpace
+
+  cout << "end" << endl;
+  //for (int i = 0; i < emptySpaces.size();i++){
+  //  cout << emptySpaces[i] << endl;
+  //}
+  return;
+}
+
+// Return the best space to move on given we move somewhere.
+// This function will start with placing the enemy, then us
+void CheetahAI::grnHelper(const char player, int &pR, int &pC, int &val) {
+  char winner = isSolved();
+  int move;
+  int currMax;
+  int bestSpace;
+  //cout << "Recursion" << endl;
+  // Need to update
+  emptySpaces.clear();
+  for (int ind = 0; ind < 9; ind++) {
+    if (myBoard[ind] == ' ') {
+      emptySpaces.push_back(ind);
+    }
+  }
 
   if (emptySpaces.size() == 0) { // The board is full
+    //cout << "done" << endl;
     return;
   } else {
     currMax = 0;
     for (int i = 0; i < emptySpaces.size(); i++ ) { // i is
-      if (player == whoami) { // choosing my move
-        val = 0;
-        myBoard[emptySpaces[i]] = whoami;
-        playGame(board,pR,pC,val,otherPlayer(player)); // Returns the val of choosing this space
-        winner = isSolved;
-        // assign values here
-        myBoard[emptySpaces[i] = ' '];
-        if (val > currMax) {
-          bestSpace = emptySpaces[i];
-        }
-
-      } else {
-
+      val = 0;
+      myBoard[emptySpaces[i]] = whoami;
+      grnHelper(otherPlayer(player),pR,pC,val); // Returns the val of choosing this space
+      winner = isSolved();
+      // assign values here
+      if (winner == whoami) {
+        val += 10;
+      } else if (winner == otherPlayer(whoami)) {
+        val += -10;
+      }
+      myBoard[emptySpaces[i]] = ' ';
+      if (val > currMax) {
+        bestSpace = emptySpaces[i];
       }
     }
   }
-  // Now I should have the index of the best space in bestSpace
+
   pC = bestSpace % 3;
   if (bestSpace < 3) {
     pR = 0;
@@ -111,27 +143,6 @@ void CheetahAI::playGame(char ** &board, int &pR, int &pC, int &val, const char 
     pR = 2;
   }
 
-  //for (int i = 0; i < emptySpaces.size();i++){
-  //  cout << emptySpaces[i] << endl;
-  //}
-  return;
-}
-
-// Return the best space to move on given we move somewhere.
-// This function will start with placing the enemy, then us
-void CheetahAI::grnHelper(const char player, int &val) {
-  char winner = isSolved();
-  int move;
-
-  if (winner == whoami) { // This is a winning move
-    val = 10;
-  } else if (winner == otherPlayer(whoami)) { // This is a losing move
-    val = -10;
-  } else if (winner == 'n') {
-    move = makeAMove(player);
-    grnHelper(otherPlayer(player),val);
-    myBoard[move] = ' '; // undo the move on the out recursion
-  }
   return;
 }
 
