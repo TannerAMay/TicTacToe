@@ -78,71 +78,71 @@ bool full(char ** &board)
 
 bool solved(char ** &board, char player)
 {
-  if (board[0][0] == player && board[0][1] == player && board[0][2] == player ||
-      board[1][0] == player && board[1][1] == player && board[1][2] == player ||
-      board[2][0] == player && board[2][1] == player && board[2][2] == player ||
-      board[0][0] == player && board[1][0] == player && board[2][0] == player ||
-      board[0][1] == player && board[1][1] == player && board[2][1] == player ||
-      board[0][2] == player && board[1][2] == player && board[2][2] == player ||
-      board[0][0] == player && board[1][1] == player && board[2][2] == player ||
-      board[0][2] == player && board[1][1] == player && board[2][0] == player) {
-        return true;
-      }
-  return false;
-  //int rDir[]{-1, -1, 0, 1, 1, 1, 0, -1};
-  //int cDir[]{0, 1, 1, 1, 0, -1, -1, -1};
-
-  //int rOgStep, cOgStep, rStep, cStep;
-
-  //for(int r = 0; r < 3; r++)
-  //{
-  //  for(int c = 0; c < 3; c++)
-  //  {
-  //    rOgStep = r;
-  //    cOgStep = c;
-
-  //    if(board[r][c] == player)
-  //    {
-  //      for(int d = 0; d < 8; d++)
-  //      {
-  //        for(int l = 1; l < 3; l++)
-  //        {
-  //          rStep = rOgStep + rDir[d];
-  //          cStep = cOgStep + cDir[d];
-
-  //          if(rStep < 3 && rStep > -1
-  //             && cStep < 3 && cStep > -1)
-  //          {
-  //            if(board[rStep][cStep] == player)
-  //            {
-  //              if(l == 2)
-  //              {
-  //                return 1;
-  //              }
-  //              else if(l < 2)
-  //              {
-  //                rOgStep = rStep;
-  //                cOgStep = cStep;
-  //              }
-  //            }
-  //            else
-  //            {
-  //              l = 3;
-  //              rOgStep = r;
-  //              cOgStep = c;
-  //            }
-  //          }
-  //          else
-  //          {
-  //            l = 3;
-  //            rOgStep = r;
-  //            cOgStep = c;
-  //          }
-  //        }
-  //      }
+  //if (board[0][0] == player && board[0][1] == player && board[0][2] == player ||
+  //    board[1][0] == player && board[1][1] == player && board[1][2] == player ||
+  //    board[2][0] == player && board[2][1] == player && board[2][2] == player ||
+  //    board[0][0] == player && board[1][0] == player && board[2][0] == player ||
+  //    board[0][1] == player && board[1][1] == player && board[2][1] == player ||
+  //    board[0][2] == player && board[1][2] == player && board[2][2] == player ||
+  //    board[0][0] == player && board[1][1] == player && board[2][2] == player ||
+  //    board[0][2] == player && board[1][1] == player && board[2][0] == player) {
+  //      return true;
   //    }
-  //  }
-  //}
+  //return false;
+  int rDir[]{-1, -1, 0, 1, 1, 1, 0, -1};
+  int cDir[]{0, 1, 1, 1, 0, -1, -1, -1};
+
+  int rOgStep, cOgStep, rStep, cStep;
+
+  for(int r = 0; r < 3; r++)
+  {
+    for(int c = 0; c < 3; c++)
+    {
+      rOgStep = r;
+      cOgStep = c;
+
+      if(board[r][c] == player)
+      {
+        for(int d = 0; d < 8; d++)
+        {
+          for(int l = 1; l < 3; l++)
+          {
+            rStep = rOgStep + rDir[d];
+            cStep = cOgStep + cDir[d];
+
+            if(rStep < 3 && rStep > -1
+               && cStep < 3 && cStep > -1)
+            {
+              if(board[rStep][cStep] == player)
+              {
+                if(l == 2)
+                {
+                  return 1;
+                }
+                else if(l < 2)
+                {
+                  rOgStep = rStep;
+                  cOgStep = cStep;
+                }
+              }
+              else
+              {
+                l = 3;
+                rOgStep = r;
+                cOgStep = c;
+              }
+            }
+            else
+            {
+              l = 3;
+              rOgStep = r;
+              cOgStep = c;
+            }
+          }
+        }
+      }
+    }
+  }
 
   return 0;
 }
@@ -226,8 +226,6 @@ bool play1(char ** &board)
       cout << "AI turn" << endl;
       do {
         gav.playGame(board,pR,pC);
-        cout << pR << ", " << pC << endl;
-        cin >> dumpster;
       } while ((pR < 0 || pR > 2 || pC < 0 || pC > 2) || !emptySlot(board, pR, pC));
     } else { // Human
       do {
