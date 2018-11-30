@@ -14,8 +14,7 @@ class CheetahAI {
 
   private:
     char myBoard [9]; // Represents all spaces on the board
-    vector<int> values;
-    //vector<int> emptySpaces; // Represents the empty spaces on the board
+    int values [9]; // Value of choosing this space
     int numEmpty; // Number of empty spaces
     char whoami; // Whcih piece I am
 
@@ -37,14 +36,17 @@ class CheetahAI {
     // Returns if the board is solved or not
     // 'x', 'o', or 'n' is returned
 
-    int makeAMove(const char player);
-    // Makes a move depending on if it is me or the opponent
-    // Makes an "optimal" move if it is me
-    // Makes a "bad" move it is opponent
     void solveTester();
+    // Used to test the solve function
+
     void printMyBoard();
+    // Prints the board based on myBoard array
+
     void updateValues();
+    // Resets the values array before recursion
+
     void pickSpace(int &pR, int &pC);
+    // Translates myBoard space to what the controller wants
 
   public:
     CheetahAI();
@@ -72,10 +74,10 @@ void CheetahAI::updateMyBoard(char ** &board) {
   }
 }
 
+// resets the values array every new call
 void CheetahAI::updateValues() {
-  values.clear();
   for (int i = 0; i < 9; i++) {
-    values.push_back(0);
+    values[i] = 0;
   }
   return;
 }
@@ -91,9 +93,7 @@ void CheetahAI::playGame(char ** &board, int &pR, int &pC) {
   int currMax;
   int bestSpace; // Represents the best space
   char winner;
-  //solveTester();
-  //cin >> val;
-  //cout << "Going in" << endl;
+
   if (myBoard[4] == ' ') {
     pR = 1;
     pC = 1;
@@ -103,33 +103,19 @@ void CheetahAI::playGame(char ** &board, int &pR, int &pC) {
     pickSpace(pR,pC);
   }
 
-  //cout << "Coming out ;)" << endl;
-  //for (int i = 0; i < emptySpaces.size();i++){
-  //  cout << emptySpaces[i] << endl;
-  //}
+
   return;
 }
 
-void printArr(vector<int> arr) {
-  for (int i = 0; i < arr.size(); i++) {
-    cout << arr[i] << ", ";
-  }
-  cout << endl;
-}
-
-void printt(char arr[9]) {
-  for (int i = 0; i < 9; i++) {
-    cout << arr[i] << ", ";
-  }
-  cout << endl;
-}
-
+// Prints current board state from myBoard
 void CheetahAI::printMyBoard() {
   cout << myBoard[0] << " | " << myBoard[1] << " | " << myBoard[2] << endl;
   cout << myBoard[3] << " | " << myBoard[4] << " | " << myBoard[5] << endl;
   cout << myBoard[6] << " | " << myBoard[7] << " | " << myBoard[8] << endl;
+  return;
 }
 
+// Used to check if my solve function was working
 void CheetahAI::solveTester() {
   myBoard[0] = 'o';
   myBoard[1] = 'o';
@@ -142,6 +128,7 @@ void CheetahAI::solveTester() {
   myBoard[8] = 'x';
 
   cout << isSolved() << endl;
+  return;
 }
 
 
@@ -157,20 +144,23 @@ void CheetahAI::grnHelper(const char player, int &pR, int &pC) {
     return;
   } else {
     for (int i = 0; i < emptySpaces.size(); i++ ) { // i is index of empSpace in arr
-      //printArr(emptySpaces);
-
       myBoard[emptySpaces[i]] = player; // Choose that space
 
       winner = isSolved();
 
-      if (winner == whoami || winner == otherPlayer(whoami)) {
+      if (winner == whoami) {
+        values[emptySpaces[i]] += 2;
+      } else if (winner == otherPlayer(whoami)) {
         values[emptySpaces[i]] += 1;
-        break;
       } else {
         grnHelper(otherPlayer(player),pR,pC);
-        //cout << "undo" << endl;
-        myBoard[emptySpaces[i]] = ' ';
       }
+
+
+
+      //cout << "undo" << endl;
+      myBoard[emptySpaces[i]] = ' ';
+
     }
   }
 
@@ -192,13 +182,8 @@ char CheetahAI::isSolved() {
           myBoard[2] == opt[i] && myBoard[4] == opt[i] && myBoard[6] == opt[i]) {
             return opt[i];
           }
-
   }
   return winner;
-}
-
-int CheetahAI::makeAMove(const char player) {
-  return 1;
 }
 
 // Returns the opposite player
@@ -227,6 +212,15 @@ void CheetahAI::pickSpace(int &pR, int &pC) {
       currMax = values[i];
     }
   }
+  if (currMax == 0) {
+    for (int j = 0; j < 9; j++) {
+      if (myBoard[j] == ' ') {
+        bestSpace = j;
+        break;
+      }
+    }
+  }
+
   pC = bestSpace % 3;
   if (bestSpace < 3) {
     pR = 0;
@@ -235,6 +229,7 @@ void CheetahAI::pickSpace(int &pR, int &pC) {
   } else {
     pR = 2;
   }
+
   return;
 }
 
