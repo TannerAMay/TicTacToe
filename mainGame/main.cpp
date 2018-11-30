@@ -32,7 +32,7 @@ int main()
 
       int meme;
       cin >> meme;
-      if(!play0(board, randPlayer()))
+      if(!play0(board))
       {
         cout << "Tie game\n";
 
