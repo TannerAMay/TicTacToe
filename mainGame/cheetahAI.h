@@ -14,12 +14,13 @@ class CheetahAI {
 
   private:
     char myBoard [9]; // Represents all spaces on the board
+    vector<int> values;
     //vector<int> emptySpaces; // Represents the empty spaces on the board
     int numEmpty; // Number of empty spaces
     char whoami; // Whcih piece I am
 
 
-    void grnHelper(const char player, int &pR, int &pC, int &val);
+    void grnHelper(const char player, int &pR, int &pC);
     // Recursive function called from playGame(). Will determine the value of
     // the given move. Player keeps track of the next player's turn.
 
@@ -41,6 +42,10 @@ class CheetahAI {
     // Makes an "optimal" move if it is me
     // Makes a "bad" move it is opponent
     void solveTester();
+    void printMyBoard();
+    void updateValues();
+    void pickSpace(int &pR, int &pC);
+
   public:
     CheetahAI();
 
@@ -67,7 +72,13 @@ void CheetahAI::updateMyBoard(char ** &board) {
   }
 }
 
-
+void CheetahAI::updateValues() {
+  values.clear();
+  for (int i = 0; i < 9; i++) {
+    values.push_back(0);
+  }
+  return;
+}
 
 // playGame(board,pR,pC,0,'x') <- x or o depending who i am
 // This function gets called from the main loop
@@ -75,16 +86,22 @@ void CheetahAI::updateMyBoard(char ** &board) {
 void CheetahAI::playGame(char ** &board, int &pR, int &pC) {
   // First
   updateMyBoard(board);
+  updateValues();
 
   int currMax;
   int bestSpace; // Represents the best space
   char winner;
-  int val = 0;
   //solveTester();
   //cin >> val;
   cout << "Going in" << endl;
-  grnHelper(whoami,pR,pC,val);
-  // Now I should have the index of the best space in bestSpace
+  if (myBoard[4] == ' ') {
+    pR = 1;
+    pC = 1;
+  } else {
+    grnHelper(whoami,pR,pC); // Update all values
+    // Now I should have the index of the best space in bestSpace
+    pickSpace(pR,pC);
+  }
 
   cout << "Coming out ;)" << endl;
   //for (int i = 0; i < emptySpaces.size();i++){
@@ -107,6 +124,12 @@ void printt(char arr[9]) {
   cout << endl;
 }
 
+void CheetahAI::printMyBoard() {
+  cout << myBoard[0] << " | " << myBoard[1] << " | " << myBoard[2] << endl;
+  cout << myBoard[3] << " | " << myBoard[4] << " | " << myBoard[5] << endl;
+  cout << myBoard[6] << " | " << myBoard[7] << " | " << myBoard[8] << endl;
+}
+
 void CheetahAI::solveTester() {
   myBoard[0] = 'o';
   myBoard[1] = 'o';
@@ -124,24 +147,15 @@ void CheetahAI::solveTester() {
 
 // Return the best space to move on given we move somewhere.
 // This function will start with placing the enemy, then us
-void CheetahAI::grnHelper(const char player, int &pR, int &pC, int &val) {
+void CheetahAI::grnHelper(const char player, int &pR, int &pC) {
   char winner;
-  int move;
-  int currMax;
-  int bestSpace;
-  static int count = 0;
   vector<int> emptySpaces;
 
-  cout << "Going one deeper: "<< player << " " << count << endl;
   updateEmpSpaces(emptySpaces);
-
-  //printArr(emptySpaces);
 
   if (emptySpaces.size() == 0) { // The board is full
     return;
   } else {
-    currMax = 0; // The best value found so far
-    bestSpace = emptySpaces[0];
     for (int i = 0; i < emptySpaces.size(); i++ ) { // i is index of empSpace in arr
       //printArr(emptySpaces);
 
@@ -149,37 +163,17 @@ void CheetahAI::grnHelper(const char player, int &pR, int &pC, int &val) {
 
       winner = isSolved();
 
-
-      if (winner == whoami) {
-        val += 10;
-      } else if (winner == otherPlayer(whoami)) {
-        val += -10;
+      if (winner == whoami || winner == otherPlayer(whoami)) {
+        values[emptySpaces[i]] += 1;
+        break;
       } else {
-        grnHelper(otherPlayer(player),pR,pC,val);
-        cout << "undo" << endl;
+        grnHelper(otherPlayer(player),pR,pC);
+        //cout << "undo" << endl;
         myBoard[emptySpaces[i]] = ' ';
       }
-
-      if (val > currMax) {
-        bestSpace = emptySpaces[i];
-        currMax = val;
-      }
-      cout << "Empty space " << emptySpaces[i] << " had value " << val << endl;
-      val = 0;
-      //cout << "For loop: " << i << " / " << emptySpaces.size() << endl;
     }
   }
 
-  pC = bestSpace % 3;
-
-  if (bestSpace < 3) {
-    pR = 0;
-  } else if (bestSpace >= 3 && bestSpace <= 5) {
-    pR = 1;
-  } else {
-    pR = 2;
-  }
-  count++;
   return;
 }
 
@@ -221,6 +215,27 @@ void CheetahAI::updateEmpSpaces(vector<int> &emptySpaces) {
       emptySpaces.push_back(ind);
     }
   }
+}
+
+void CheetahAI::pickSpace(int &pR, int &pC) {
+  int bestSpace = 0; // index of best space
+  int currMax = 0; // running max
+
+  for (int i = 1; i < 9; i++) {
+    if (values[i] > currMax) {
+      bestSpace = i;
+      currMax = values[i];
+    }
+  }
+  pC = bestSpace % 3;
+  if (bestSpace < 3) {
+    pR = 0;
+  } else if (bestSpace >= 3 && bestSpace <= 5) {
+    pR = 1;
+  } else {
+    pR = 2;
+  }
+  return;
 }
 
 #endif
