@@ -93,7 +93,7 @@ void CheetahAI::playGame(char ** &board, int &pR, int &pC) {
   char winner;
   //solveTester();
   //cin >> val;
-  cout << "Going in" << endl;
+  //cout << "Going in" << endl;
   if (myBoard[4] == ' ') {
     pR = 1;
     pC = 1;
@@ -103,7 +103,7 @@ void CheetahAI::playGame(char ** &board, int &pR, int &pC) {
     pickSpace(pR,pC);
   }
 
-  cout << "Coming out ;)" << endl;
+  //cout << "Coming out ;)" << endl;
   //for (int i = 0; i < emptySpaces.size();i++){
   //  cout << emptySpaces[i] << endl;
   //}
