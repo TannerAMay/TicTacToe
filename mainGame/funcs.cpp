@@ -76,7 +76,7 @@ bool full(char ** &board)
   return 1;
 }
 
-bool solved(char ** &board, char player)
+char solved(char ** &board)
 {
   //if (board[0][0] == player && board[0][1] == player && board[0][2] == player ||
   //    board[1][0] == player && board[1][1] == player && board[1][2] == player ||
@@ -93,58 +93,62 @@ bool solved(char ** &board, char player)
   int cDir[]{0, 1, 1, 1, 0, -1, -1, -1};
 
   int rOgStep, cOgStep, rStep, cStep;
+  char players [2] = {'x','o'};
 
-  for(int r = 0; r < 3; r++)
-  {
-    for(int c = 0; c < 3; c++)
+  for (int i = 0; i < 2; i++) {
+
+    for(int r = 0; r < 3; r++)
     {
-      rOgStep = r;
-      cOgStep = c;
-
-      if(board[r][c] == player)
+      for(int c = 0; c < 3; c++)
       {
-        for(int d = 0; d < 8; d++)
-        {
-          for(int l = 1; l < 3; l++)
-          {
-            rStep = rOgStep + rDir[d];
-            cStep = cOgStep + cDir[d];
+        rOgStep = r;
+        cOgStep = c;
 
-            if(rStep < 3 && rStep > -1
-               && cStep < 3 && cStep > -1)
+        if(board[r][c] == players[i])
+        {
+          for(int d = 0; d < 8; d++)
+          {
+            for(int l = 1; l < 3; l++)
             {
-              if(board[rStep][cStep] == player)
-              {
-                if(l == 2)
+              rStep = rOgStep + rDir[d];
+              cStep = cOgStep + cDir[d];
+
+              if(rStep < 3 && rStep > -1
+                && cStep < 3 && cStep > -1)
                 {
-                  return 1;
+                  if(board[rStep][cStep] == players[i])
+                  {
+                    if(l == 2)
+                    {
+                      return players[i];
+                    }
+                    else if(l < 2)
+                    {
+                      rOgStep = rStep;
+                      cOgStep = cStep;
+                    }
+                  }
+                  else
+                  {
+                    l = 3;
+                    rOgStep = r;
+                    cOgStep = c;
+                  }
                 }
-                else if(l < 2)
+                else
                 {
-                  rOgStep = rStep;
-                  cOgStep = cStep;
+                  l = 3;
+                  rOgStep = r;
+                  cOgStep = c;
                 }
               }
-              else
-              {
-                l = 3;
-                rOgStep = r;
-                cOgStep = c;
-              }
-            }
-            else
-            {
-              l = 3;
-              rOgStep = r;
-              cOgStep = c;
             }
           }
         }
       }
     }
-  }
 
-  return 0;
+  return 'n';
 }
 
 bool emptySlot(char ** &board, int r, int c)
@@ -196,7 +200,7 @@ bool play2(char ** &board, char player)
 
   printBoard(board);
 
-  if(solved(board, player))
+  if(solved(board))
   {
     cout << "Player " << player << " has won!\n";
     return 1;
@@ -217,12 +221,13 @@ bool play1(char ** &board)
 
   char player = 'x'; // Who starts
   int pR, pC;
-  int dumpster = 0; // Cause im dumb
+  char winner;
+
   CheetahAI gav(AI_PLAYER); // Initialize me with who I am
   cout << "Game start" << endl;
-  do {
 
-    if (player == AI_PLAYER) {
+  do {
+    if (player == AI_PLAYER) { // AI
       cout << "AI turn" << endl;
       do {
         gav.playGame(board,pR,pC);
@@ -239,15 +244,18 @@ bool play1(char ** &board)
     }
 
     board[pR][pC] = player;
+    cout << solved(board) << " <<<< " << endl;
     player = swapPlayer(player);
-  } while (!solved(board, player) || !full(board));
+  } while (solved(board) == 'n' && !full(board));
 
   cout << endl;
 
   printBoard(board);
 
-  if (solved(board, player)) {
-    cout << "Player " << player << " has won!" << endl;
+  winner = solved(board);
+
+  if (winner != 'n') {
+    cout << "Player " << winner << " has won!" << endl;
     return 1;
   } else {
     return 0; // Tie is handled in main
@@ -293,7 +301,7 @@ bool play0(char ** &board, char player)
 
   printBoard(board);
 
-  if(solved(board, player))
+  if(solved(board))
   {
     cout << "Player " << player << " has won!\n";
     //tannerAI(board, pR, pC, 1, choice);

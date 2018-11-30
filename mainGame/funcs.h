@@ -16,7 +16,7 @@ void printBoard(char ** &board);
 void deleteBoard(char ** &board);
 void setBoard(char ** &board);
 bool full(char ** &board);
-bool solved(char ** &board, char player);
+char solved(char ** &board);
 bool emptySlot(char ** &board, int r, int c);
 char swapPlayer(const char player);
 
