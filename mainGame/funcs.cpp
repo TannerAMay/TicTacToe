@@ -219,7 +219,6 @@ bool play1(char ** &board)
     if (player == AI_PLAYER) { // AI
       cout << "AI turn" << endl;
       do {
-
         gav.playGame(board,pR,pC);
       } while ((pR < 0 || pR > 2 || pC < 0 || pC > 2) || !emptySlot(board, pR, pC));
     } else { // Human

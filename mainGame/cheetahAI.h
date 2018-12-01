@@ -3,6 +3,8 @@
 
 #include <vector>
 #include <iostream>
+#include <stdlib.h>
+#include <time.h>
 using std::vector;
 using std::cout;
 using std::endl;
@@ -56,8 +58,17 @@ class CheetahAI {
     void playGame(char ** &board, int &pR, int &pC);
 };
 
+CheetahAI::CheetahAI() {
+  srand(time(NULL));
+  do {
+    cout << "Choose a player: ";
+    cin >> whoami;
+  } while (whoami != 'x' && whoami != 'o');
+}
+
 // When initialized I should only know who I am
 CheetahAI::CheetahAI(const char me) {
+  srand(time(NULL));
   whoami = me;
 }
 
@@ -94,14 +105,10 @@ void CheetahAI::playGame(char ** &board, int &pR, int &pC) {
   int bestSpace; // Represents the best space
   char winner;
 
-  if (myBoard[4] == ' ') {
-    pR = 1;
-    pC = 1;
-  } else {
-    grnHelper(whoami,pR,pC); // Update all values
-    // Now I should have the index of the best space in bestSpace
-    pickSpace(pR,pC);
-  }
+  grnHelper(whoami,pR,pC); // Update all values
+  // Now I should have the index of the best space in bestSpace
+  pickSpace(pR,pC);
+  //}
 
 
   return;
@@ -156,9 +163,6 @@ void CheetahAI::grnHelper(const char player, int &pR, int &pC) {
         grnHelper(otherPlayer(player),pR,pC);
       }
 
-
-
-      //cout << "undo" << endl;
       myBoard[emptySpaces[i]] = ' ';
 
     }
@@ -205,22 +209,34 @@ void CheetahAI::updateEmpSpaces(vector<int> &emptySpaces) {
 void CheetahAI::pickSpace(int &pR, int &pC) {
   int bestSpace = 0; // index of best space
   int currMax = 0; // running max
+  vector<int> same;
 
+  // find the max value
   for (int i = 1; i < 9; i++) {
     if (values[i] > currMax) {
       bestSpace = i;
       currMax = values[i];
     }
   }
-  if (currMax == 0) {
+
+  // Fill same vector
+  if (currMax == 0) { // Choose from empties
     for (int j = 0; j < 9; j++) {
       if (myBoard[j] == ' ') {
-        bestSpace = j;
+        same.push_back(j);
         break;
+      }
+    }
+  } else { // Choose from maxes
+    for (int k = 0; k < 9; k++) {
+      if (values[k] == currMax) {
+        same.push_back(k);
       }
     }
   }
 
+  bestSpace = same[(rand() % same.size())];
+  
   pC = bestSpace % 3;
   if (bestSpace < 3) {
     pR = 0;
