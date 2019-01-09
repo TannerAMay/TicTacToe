@@ -1,5 +1,5 @@
 ﻿#include "funcs.h"
-
+#include "cheetahAI.h"
 char ** buildBoard()
 {
   char **board = new char *[3];
@@ -81,69 +81,79 @@ bool full(char ** &board)
   return 1;
 }
 
-bool solved(char ** &board, char player)
+char solved(char ** &board)
 {
   int rDir[]{-1, -1, 0, 1, 1, 1, 0, -1};
   int cDir[]{0, 1, 1, 1, 0, -1, -1, -1};
 
   int rOgStep, cOgStep, rStep, cStep;
+  char players [2] = {'x','o'};
 
-  for(int r = 0; r < 3; r++)
-  {
-    for(int c = 0; c < 3; c++)
+  for (int i = 0; i < 2; i++) {
+
+    for(int r = 0; r < 3; r++)
     {
-      rOgStep = r;
-      cOgStep = c;
-
-      if(board[r][c] == player)
+      for(int c = 0; c < 3; c++)
       {
-        for(int d = 0; d < 8; d++)
-        {
-          for(int l = 1; l < 3; l++)
-          {
-            rStep = rOgStep + rDir[d];
-            cStep = cOgStep + cDir[d];
+        rOgStep = r;
+        cOgStep = c;
 
-            if(rStep < 3 && rStep > -1
-               && cStep < 3 && cStep > -1)
+        if(board[r][c] == players[i])
+        {
+          for(int d = 0; d < 8; d++)
+          {
+            for(int l = 1; l < 3; l++)
             {
-              if(board[rStep][cStep] == player)
-              {
-                if(l == 2)
+              rStep = rOgStep + rDir[d];
+              cStep = cOgStep + cDir[d];
+
+              if(rStep < 3 && rStep > -1
+                && cStep < 3 && cStep > -1)
                 {
-                  return 1;
+                  if(board[rStep][cStep] == players[i])
+                  {
+                    if(l == 2)
+                    {
+                      return players[i];
+                    }
+                    else if(l < 2)
+                    {
+                      rOgStep = rStep;
+                      cOgStep = cStep;
+                    }
+                  }
+                  else
+                  {
+                    l = 3;
+                    rOgStep = r;
+                    cOgStep = c;
+                  }
                 }
-                else if(l < 2)
+                else
                 {
-                  rOgStep = rStep;
-                  cOgStep = cStep;
+                  l = 3;
+                  rOgStep = r;
+                  cOgStep = c;
                 }
               }
-              else
-              {
-                l = 3;
-                rOgStep = r;
-                cOgStep = c;
-              }
-            }
-            else
-            {
-              l = 3;
-              rOgStep = r;
-              cOgStep = c;
             }
           }
         }
       }
     }
-  }
 
-  return 0;
+  return 'n';
 }
 
 bool emptySlot(char ** &board, int r, int c)
 {
   return board[r][c] == ' ';
+}
+
+char swapPlayer(const char player) {
+  if (player == 'x')
+    return 'o';
+  return 'x';
 }
 
 bool play2(char ** &board, char player)
@@ -184,7 +194,7 @@ bool play2(char ** &board, char player)
 
   printBoard(board);
 
-  if(solved(board, player))
+  if(solved(board))
   {
     cout << "Player " << player << " has won!\n";
     return 1;
@@ -198,112 +208,97 @@ bool play2(char ** &board, char player)
   throw "Something terrible has happened.";
 }
 
-bool play1(char ** &board, char player)
+bool play1(char ** &board)
 {
   static map<int, int> choice;
+  const char AI_PLAYER = randPlayer();
 
-  if(full(board))
-  {
-    //tannerAI(board, pR, pC, 1, choice);
-    return 0;
-  }
-
+  char player = 'x'; // Who starts
   int pR, pC;
+  char winner;
 
-  if(player == 'x')
-  {
-    do
-    {
-      pR = 0;
-      pC = 0;
-      //tannerAI(board, pR, pC, 0, choice);
-    }while((pR < 0 || pR > 2 || pC < 0 || pC > 2) || !emptySlot(board, pR, pC));
+  CheetahAI gav(AI_PLAYER); // Initialize me with who I am
+  cout << "Game start" << endl;
 
-    board[pR][pC] = 'x';
-  }
-  else
-  {
-    do
-    {
-      cout << "\nIt's your turn\n";
-      cout << "r: ";
-      cin >> pR;
-      cout << "c: ";
-      cin >>pC;
-    }while((pR < 0 || pR > 2 || pC < 0 || pC > 2) || !emptySlot(board, pR, pC));
+  do {
+    if (player == AI_PLAYER) { // AI
+      cout << "AI turn" << endl;
+      do {
 
-    board[pR][pC] = 'o';
-  }
+        gav.playGame(board,pR,pC);
+      } while ((pR < 0 || pR > 2 || pC < 0 || pC > 2) || !emptySlot(board, pR, pC));
+    } else { // Human
+      do {
+        printBoard(board);
+        cout << "\nIt's your turn\n";
+        cout << "r: ";
+        cin >> pR;
+        cout << "c: ";
+        cin >>pC;
+      } while ((pR < 0 || pR > 2 || pC < 0 || pC > 2) || !emptySlot(board, pR, pC));
+    }
+
+    board[pR][pC] = player; // Update board
+    player = swapPlayer(player); // Swap players
+    winner = solved(board);
+  } while (winner == 'n' && !full(board));
 
   cout << endl;
 
   printBoard(board);
 
-  if(solved(board, player))
-  {
-    cout << "Player " << player << " has won!\n";
-    //tannerAI(board, pR, pC, 1, choice);
+  if (winner != 'n') {
+    cout << "Player " << winner << " has won!" << endl;
     return 1;
+  } else {
+    return 0; // Tie is handled in main
   }
 
-  if(player == 'x')
-    return play1(board, 'o');
-  else
-    return play1(board, 'x');
-
-  throw "Something terrible has happened.";
+  //throw "Something terrible has happened.";
 }
 
-bool play0(char ** &board, char player)
+bool play0(char ** &board)
 {
   static map<int, int> choice;
+  const char CHEETAH = 'x';
+  const char TANNER = 'o';
 
-  if(full(board))
-  {
-    //tannerAI(board, pR, pC, 1, choice);
-    return 0;
-  }
-
+  char player = randPlayer();
   int pR, pC;
+  char winner;
 
-  if(player == 'x')
-  {
-    do
-    {
-      pR = 0;
-      pC = 0;
-      //tannerAI(board, pR, pC, 0, choice);
-    }while((pR < 0 || pR > 2 || pC < 0 || pC > 2) || !emptySlot(board, pR, pC));
+  CheetahAI gav(CHEETAH);
 
-    board[pR][pC] = 'x';
-  }
-  else
-  {
-    do
-    {
-      pR = 0;
-      pC = 0;
-      //gavinAI(board, pR, pC);
-    }while((pR < 0 || pR > 2 || pC < 0 || pC > 2) || !emptySlot(board, pR, pC));
+  cout << "Game start" << endl;
 
-    board[pR][pC] = 'o';
-  }
+  do {
+    if (player == CHEETAH) { // Cheetah
+      cout << "Cheetah's turn" << endl;
+      do {
+        gav.playGame(board,pR,pC);
+      } while ((pR < 0 || pR > 2 || pC < 0 || pC > 2) || !emptySlot(board, pR, pC));
+    } else { // Tanner
+      do {
+        // Tanner's function
+        cout << "Placeholder" << endl;
+      } while ((pR < 0 || pR > 2 || pC < 0 || pC > 2) || !emptySlot(board, pR, pC));
+    }
+
+    board[pR][pC] = player; // Update board
+    player = swapPlayer(player); // Swap players
+    winner = solved(board);
+  } while (winner == 'n' && !full(board));
 
   printBoard(board);
 
-  if(solved(board, player))
+  if(winner != 'n')
   {
     cout << "Player " << player << " has won!\n";
     //tannerAI(board, pR, pC, 1, choice);
     return 1;
   }
 
-  if(player == 'x')
-    return play0(board, 'o');
-  else
-    return play0(board, 'x');
-
-  throw "Something terrible has happened.";
+  //throw "Something terrible has happened.";
 }
 
 char randPlayer()
