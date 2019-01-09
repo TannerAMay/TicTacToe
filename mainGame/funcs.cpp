@@ -14,8 +14,13 @@ char ** buildBoard()
 
 void printBoard(char ** &board)
 {
+  cout << "   0   1   2 \n";
+  cout << " ------------\n";
+
   for(int r = 0; r < 3; r++)
   {
+    cout << r << "|";
+
     for(int c = 0; c < 3; c++)
     {
       if(c == 2)
@@ -35,7 +40,7 @@ void printBoard(char ** &board)
     }
 
     if(r != 2)
-      cout << "---+---+---\n";
+      cout << " |---+---+---\n";
   }
   cout << endl;
 }
