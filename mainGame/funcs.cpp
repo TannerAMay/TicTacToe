@@ -90,8 +90,8 @@ char solved(char ** &board)
   char checkerChar = 'c';
   coords checkers[] = {coords(1, 0), coords(1, 1), coords(1, 2), coords(0, 1), coords(2, 1)};
 
-  int i = 0;
-  for(; i < 5; i++)
+  
+  for(int i = 0; i < 5; i++)
   {
     if(board[checkers[i].row][checkers[i].col] != ' ')
     {
