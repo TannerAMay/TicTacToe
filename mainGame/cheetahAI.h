@@ -21,7 +21,7 @@ class CheetahAI {
     char whoami; // Whcih piece I am
 
 
-    void grnHelper(const char player, int &pR, int &pC);
+    void grnHelper(const char player);
     // Recursive function called from playGame(). Will determine the value of
     // the given move. Player keeps track of the next player's turn.
 
@@ -50,12 +50,14 @@ class CheetahAI {
     void pickSpace(int &pR, int &pC);
     // Translates myBoard space to what the controller wants
 
+    void printValues();
+
   public:
     CheetahAI();
 
     CheetahAI(const char whoami);
 
-    void playGame(char ** &board, int &pR, int &pC);
+    void playGame(char ** &board);
 };
 
 CheetahAI::CheetahAI() {
@@ -96,19 +98,31 @@ void CheetahAI::updateValues() {
 // playGame(board,pR,pC,0,'x') <- x or o depending who i am
 // This function gets called from the main loop
 // Makes a move based on the current board state aka the emptySpaces
-void CheetahAI::playGame(char ** &board, int &pR, int &pC) {
-  // First
+void CheetahAI::playGame(board &b) {
+
+  int pR,pC;
+  char ** board[3][3];
+  for (int r = 0; r < 3; r++) {
+    for (int c = 0; c < 3; c++) {
+      board[r][c] = b.at(r,c);
+    }
+  }
+
+  // *First
   updateMyBoard(board);
   updateValues();
+
+
 
   int currMax;
   int bestSpace; // Represents the best space
   char winner;
 
-  grnHelper(whoami,pR,pC); // Update all values
+  grnHelper(whoami); // Update all values
   // Now I should have the index of the best space in bestSpace
+  //printValues();
   pickSpace(pR,pC);
-  //}
+  b.place(pR,pC,whoami);
 
 
   return;
@@ -119,6 +133,15 @@ void CheetahAI::printMyBoard() {
   cout << myBoard[0] << " | " << myBoard[1] << " | " << myBoard[2] << endl;
   cout << myBoard[3] << " | " << myBoard[4] << " | " << myBoard[5] << endl;
   cout << myBoard[6] << " | " << myBoard[7] << " | " << myBoard[8] << endl;
+  return;
+}
+
+void CheetahAI::printValues() {
+  cout << values[0] << " | " << values[1] << " | " << values[2] << endl;
+  //cout << "---+---+---\n" << endl;
+  cout << values[3] << " | " << values[4] << " | " << values[5] << endl;
+  //cout << "---+---+---\n" << endl;
+  cout << values[6] << " | " << values[7] << " | " << values[8] << endl;
   return;
 }
 
@@ -141,7 +164,7 @@ void CheetahAI::solveTester() {
 
 // Return the best space to move on given we move somewhere.
 // This function will start with placing the enemy, then us
-void CheetahAI::grnHelper(const char player, int &pR, int &pC) {
+void CheetahAI::grnHelper(const char player) {
   char winner;
   vector<int> emptySpaces;
 
@@ -160,7 +183,7 @@ void CheetahAI::grnHelper(const char player, int &pR, int &pC) {
       } else if (winner == otherPlayer(whoami)) {
         values[emptySpaces[i]] += 1;
       } else {
-        grnHelper(otherPlayer(player),pR,pC);
+        grnHelper(otherPlayer(player));
       }
 
       myBoard[emptySpaces[i]] = ' ';
@@ -236,7 +259,7 @@ void CheetahAI::pickSpace(int &pR, int &pC) {
   }
 
   bestSpace = same[(rand() % same.size())];
-  
+
   pC = bestSpace % 3;
   if (bestSpace < 3) {
     pR = 0;
