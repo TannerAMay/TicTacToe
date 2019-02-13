@@ -29,11 +29,4 @@ bool play0(char ** &board);
 char randPlayer();
 //char randPlayerAI();
 
-//void tannerAI(char const* const* const &board, int &pR, int &pC,
-//              bool nGame, map<int, int> &choice); //0
-void treeMaker(char const* const* const &board);
-
-//void gavinAI(char const* const* const &board, int &pR, int &pC); //1
-
-
 #endif // FUNCS_H

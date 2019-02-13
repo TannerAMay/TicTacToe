@@ -1,4 +1,4 @@
-#include "funcs.h"
+﻿#include "funcs.h"
 
 
 int main()
@@ -30,13 +30,10 @@ int main()
 
       printBoard(board);
 
-      int meme;
-      cin >> meme;
+//      int meme;
+//      cin >> meme;
       if(!play0(board))
-      {
         cout << "Tie game\n";
-
-      }
 
       break;
     case 1:
@@ -44,13 +41,8 @@ int main()
       setBoard(board);
 
       printBoard(board);
-      cout << "Here" << endl;
       if(!play1(board))
-      {
         cout << "Tie game\n";
-      }
-      cout << "Out" << endl;
-
       break;
     case 2:
       board = buildBoard();

@@ -1,5 +1,9 @@
 ﻿#include "funcs.h"
+#include "../tanner_AI/MultiTree/coords.h"
 #include "cheetahAI.h"
+
+using std::cerr;
+
 char ** buildBoard()
 {
   char **board = new char *[3];
@@ -14,8 +18,13 @@ char ** buildBoard()
 
 void printBoard(char ** &board)
 {
+  cout << "   0   1   2 \n";
+  cout << " ------------\n";
+
   for(int r = 0; r < 3; r++)
   {
+    cout << r << "|";
+
     for(int c = 0; c < 3; c++)
     {
       if(c == 2)
@@ -35,7 +44,7 @@ void printBoard(char ** &board)
     }
 
     if(r != 2)
-      cout << "---+---+---\n";
+      cout << " |---+---+---\n";
   }
   cout << endl;
 }
@@ -78,64 +87,44 @@ bool full(char ** &board)
 
 char solved(char ** &board)
 {
-  int rDir[]{-1, -1, 0, 1, 1, 1, 0, -1};
-  int cDir[]{0, 1, 1, 1, 0, -1, -1, -1};
+  char checkerChar = 'c';
+  coords checkers[] = {coords(1, 0), coords(1, 1), coords(1, 2), coords(0, 1), coords(2, 1)};
 
-  int rOgStep, cOgStep, rStep, cStep;
-  char players [2] = {'x','o'};
-
-  for (int i = 0; i < 2; i++) {
-
-    for(int r = 0; r < 3; r++)
+  
+  for(int i = 0; i < 5; i++)
+  {
+    if(board[checkers[i].row][checkers[i].col] != ' ')
     {
-      for(int c = 0; c < 3; c++)
+      checkerChar = board[checkers[i].row][checkers[i].col];
+
+      if(i == 0 || i == 2) //up down case
       {
-        rOgStep = r;
-        cOgStep = c;
-
-        if(board[r][c] == players[i])
-        {
-          for(int d = 0; d < 8; d++)
-          {
-            for(int l = 1; l < 3; l++)
-            {
-              rStep = rOgStep + rDir[d];
-              cStep = cOgStep + cDir[d];
-
-              if(rStep < 3 && rStep > -1
-                && cStep < 3 && cStep > -1)
-                {
-                  if(board[rStep][cStep] == players[i])
-                  {
-                    if(l == 2)
-                    {
-                      return players[i];
-                    }
-                    else if(l < 2)
-                    {
-                      rOgStep = rStep;
-                      cOgStep = cStep;
-                    }
-                  }
-                  else
-                  {
-                    l = 3;
-                    rOgStep = r;
-                    cOgStep = c;
-                  }
-                }
-                else
-                {
-                  l = 3;
-                  rOgStep = r;
-                  cOgStep = c;
-                }
-              }
-            }
-          }
-        }
+        if(board[checkers[i].row - 1][checkers[i].col] == checkerChar //up
+           && board[checkers[i].row + 1][checkers[i].col] == checkerChar) //down
+          return checkerChar;
+      }
+      else if(i == 3 || i == 4) //left right case)
+      {
+        if(board[checkers[i].row][checkers[i].col - 1] == checkerChar //left
+           && board[checkers[i].row][checkers[i].col + 1] == checkerChar) //right
+          return checkerChar;
+      }
+      else //center square u,d,l,r,dur, dul, ddr, ddl
+      {
+        if((board[0][1] == checkerChar //up
+            && board[2][1] == checkerChar) //down
+           || (board[1][0] == checkerChar //left
+               && board[1][2] == checkerChar) //right
+           || (board[0][2] == checkerChar //diag. up right
+               && board[2][0] == checkerChar) //diag down left
+           || (board[0][0] == checkerChar //diag up left
+               && board[2][2] == checkerChar)) //diag down right
+          return checkerChar;
       }
     }
+    else if(i == 4 && board[checkers[i].row][checkers[i].col] == ' ')
+      return 'n';
+  }
 
   return 'n';
 }
@@ -189,7 +178,7 @@ bool play2(char ** &board, char player)
 
   printBoard(board);
 
-  if(solved(board))
+  if(solved(board) != 'n')
   {
     cout << "Player " << player << " has won!\n";
     return 1;
@@ -213,17 +202,18 @@ bool play1(char ** &board)
   char winner;
 
   CheetahAI gav(AI_PLAYER); // Initialize me with who I am
-  cout << "Game start" << endl;
+  //cout << "Game start" << endl;
 
   do {
     if (player == AI_PLAYER) { // AI
-      cout << "AI turn" << endl;
+      cout << "AI turn:" << endl;
       do {
         gav.playGame(board,pR,pC);
+        //printBoard(board);
       } while ((pR < 0 || pR > 2 || pC < 0 || pC > 2) || !emptySlot(board, pR, pC));
     } else { // Human
       do {
-        printBoard(board);
+        //printBoard(board);
         cout << "\nIt's your turn\n";
         cout << "r: ";
         cin >> pR;
@@ -233,6 +223,9 @@ bool play1(char ** &board)
     }
 
     board[pR][pC] = player; // Update board
+
+    printBoard(board);
+
     player = swapPlayer(player); // Swap players
     winner = solved(board);
   } while (winner == 'n' && !full(board));
@@ -263,7 +256,7 @@ bool play0(char ** &board)
 
   CheetahAI gav(CHEETAH);
 
-  cout << "Game start" << endl;
+  //cout << "Game start" << endl;
 
   do {
     if (player == CHEETAH) { // Cheetah
@@ -306,30 +299,3 @@ char randPlayer()
 
   return 'o';
 }
-
-/*void tannerAI(char const* const* const &board, int &pR, int &pC,
-              bool nGame, map<int, int> &choice)
-{
-  if(nGame)
-  {
-    choice.clear();
-    return;
-  }
-
-
-
-
-  return;
-}*/
-
-void treeMaker(char const* const* const &board)
-{
-
-
-  return;
-}
-
-/*void gavinAI(char const* const* const &board, int &pR, int &pC)
-{
-  return;
-}*/
