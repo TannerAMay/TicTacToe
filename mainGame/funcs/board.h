@@ -1,7 +1,7 @@
 #ifndef BOARD_H
 #define BOARD_H
 
-#include "../../tanner_AI/multitree2/coords.h"
+#include "../../tanner_AI/multitree/coords.h"
 #include "misc_funcs.h"
 
 /*Files included so far:

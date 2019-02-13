@@ -5,7 +5,7 @@
 
 //#include "../funcs2/board.h"
 
-#include "../../tanner_AI/ai2/tannerai.h"
+#include "../../tanner_AI/ai/tannerai.h"
 
 /*files included at this point
  * <iostream>

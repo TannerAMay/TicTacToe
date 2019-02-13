@@ -1,8 +1,8 @@
 #ifndef TANNERAI_H
 #define TANNERAI_H
 
-#include "../multitree2/multitree.h"
-#include "../../mainGame/funcs2/board.h"
+#include "../multitree/multitree.h"
+#include "../../mainGame/funcs/board.h"
 
 /*files included at this point
  * <iostream>
