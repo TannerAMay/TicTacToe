@@ -24,6 +24,8 @@ private:
   void print_help(const node* rt, string indent) const;
 
 public:
+  //p is the chacater that does not go first in the game
+  //must be like this because of how gen_tree works in ai class
   multitree(const char &p);
 
   ~multitree();
@@ -44,10 +46,13 @@ public:
   unsigned int get_curr_height() const { return curr->get_height(); }
   unsigned int get_curr_numChildren() const { return curr->get_numChildren(); }
   string get_curr_boardStr() const { return curr->get_boardStr(); }
+  bool get_curr_win() const { return curr->get_win(); }
+  unsigned short get_curr_top_score() const { return curr->top_score(); }
 
   void set_curr_score(const unsigned int &s) { curr->set_score(s); }
   void set_curr_height(const unsigned int &h) { curr->set_height(h); }
   void set_curr_boardStr(const string &s) { curr->set_boardStr(s); }
+  void set_curr_win(const bool w) { curr->set_win(w); }
 };
 
 #endif // MULTITREE_H

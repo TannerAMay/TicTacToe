@@ -14,7 +14,7 @@ unsigned int node::top_score() const
 
   unsigned int top = 0;
 
-  for(unsigned i = 0; i != children.size(); i++)
+  for(unsigned int i = 0; i != children.size(); i++)
   {
     if(children.at(i)->score > children.at(top)->score)
       top = i;

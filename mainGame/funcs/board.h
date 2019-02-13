@@ -38,10 +38,10 @@ public:
 
   //places player at (r, c) if it is ' '
   //if it is not empty it throws string
-  void place(const unsigned int r, const unsigned int c, const char player);
+  void place(const unsigned short r, const unsigned short c, const char player);
 
   //returns the char at (r, c)
-  char at(const unsigned int r, const unsigned int c) const;
+  char at(const unsigned short r, const unsigned short c) const;
 
   void print() const;
 

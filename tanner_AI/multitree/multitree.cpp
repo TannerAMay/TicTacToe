@@ -22,12 +22,13 @@ void multitree::print_help(const node* rt, string indent) const
   if(rt->get_numChildren() == 0)
   {
     //unicode for pretty arrows
-    cout << indent << "  \u21B1 empty\n"; //up-right arrow
+    cout << indent << "  \u21b1 empty\n"; //up-right arrow
     cout << indent << *rt << endl;
     cout << indent << "  \u21b3 empty\n"; //down-right arr
   }
   else
   {
+    //these must be unsigned
     const int size = rt->get_numChildren();
     int index = size - 1;
 
@@ -36,10 +37,14 @@ void multitree::print_help(const node* rt, string indent) const
       print_help(rt->get_child(index), indent + "  ");
 
     cout << indent << *rt << endl;
+    if(rt->get_numChildren() == 1)
+      cout << indent << "  \u21b3 empty\n";
 
     //"left side" of tree
     for(; index >= 0; index--)
+    {
       print_help(rt->get_child(index), indent + "  ");
+    }
   }
 }
 
@@ -47,13 +52,12 @@ void multitree::print_help(const node* rt, string indent) const
  *  PUBLIC   *
  *************/
 
-
 multitree::multitree(const char &p)
 {
-  root = new node(coords(-1, -1), p, nullptr);
+  root = new node(coords(100, 100), p, nullptr);
+  root->set_boardStr("---------");
   curr = root;
 }
-
 
 multitree::~multitree()
 {

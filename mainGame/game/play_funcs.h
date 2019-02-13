@@ -3,14 +3,22 @@
 
 //file that contains the play functions for 0, 1, and 2 players
 
-#include "../funcs2/board.h"
+//#include "../funcs2/board.h"
 
-/*Files included at this point
+#include "../../tanner_AI/ai2/tannerai.h"
+
+/*files included at this point
  * <iostream>
- * "coords.h"
+ * "../multitree2/coords.h"
+ * <vector>
+ * "../multitree2/node.h"
+ * "../multitree2/multitree.h"
+ * <iostream>       I don't know if these two lines will cause issues
+ * "coords.h"       !
  * <random>
  * "misc_funcs.h"
  * "board.h"
+ * "tannerai.h"
  */
 
 using std::cin;

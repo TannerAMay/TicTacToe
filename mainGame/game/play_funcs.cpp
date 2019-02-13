@@ -11,7 +11,7 @@ bool play_2(board &b)
   cout << player << " goes first.\n";
 
   char solvedVar = '?';
-  unsigned int row, col;
+  unsigned short row, col;
 
   do
   {
@@ -126,11 +126,11 @@ bool play_1t(board &b)
   cout << "You are " << HUMAN << endl;
 
   if(currTurn == HUMAN)
-    cout << HUMAN << ", you, go first.\n";
+    cout << HUMAN << ", you, goes first.\n";
   else
     cout << AI << ", Tanner's AI, goes first.\n";
 
-  //TANNER'S UPDATED AI INIT GOES HERE
+  tannerAi t((currTurn == AI) ? HUMAN : AI, AI);
 
   do
   {
@@ -156,7 +156,14 @@ bool play_1t(board &b)
     else
     {
       cout << "AI's turn.\n";
-      //TANNER PLAY GAME, use same try, catch as above
+
+      try
+      {
+        t.play(b);
+      }catch(char const* s)
+      {
+        cout << "Error: " << *s << endl;
+      }
     }
 
     b.print();
@@ -192,17 +199,28 @@ bool play_0b(board &b)
     cout << TANNER_AI << ", Tanner's AI, goes first.\n";
 
   //AI INITS GO HERE
+  tannerAi t((currTurn == TANNER_AI) ? GAVIN_AI : TANNER_AI, TANNER_AI);
 
   do
   {
     cout << "\n==================================\n";
     if(currTurn == GAVIN_AI)
     {
+      cout << "Gavin's AI's turn.\n";
       //gavin play
     }
     else
     {
       //tanner play
+      cout << "Tanner's AI's turn.\n";
+
+      try
+      {
+        t.play(b);
+      }catch(char const* s)
+      {
+        cout << "Error: " << *s << endl;
+      }
     }
 
     b.print();
@@ -243,10 +261,12 @@ bool play_0g(board &b)
     cout << "\n==================================\n";
     if(currTurn == GAVIN_AI_1)
     {
+      cout << "Gavin's AI #1's turn.\n";
       //gavin1 play
     }
     else
     {
+      cout << "Gavin's AI #1's turn.\n";
       //gavin2 play
     }
 
@@ -282,17 +302,35 @@ bool play_0t(board &b)
     cout << TANNER_AI_2 << ", Tanner's AI #2, goes first.\n";
 
   //AI INITS GO HERE
+  tannerAi t1((currTurn == TANNER_AI_1) ? TANNER_AI_2 : TANNER_AI_1, TANNER_AI_1);
+  tannerAi t2((currTurn == TANNER_AI_2) ? TANNER_AI_1 : TANNER_AI_2, TANNER_AI_2);
 
   do
   {
     cout << "\n==================================\n";
     if(currTurn == TANNER_AI_1)
     {
-      //tanner1 play
+      cout << "Tanner's AI #1's turn.\n";
+
+      try
+      {
+        t1.play(b);
+      }catch(char const* s)
+      {
+        cout << "Error: " << *s << endl;
+      }
     }
     else
     {
-      //tanner2 play
+      cout << "Tanner's AI #2's turn.\n";
+
+      try
+      {
+        t2.play(b);
+      }catch(char const* s)
+      {
+        cout << "Error: " << *s << endl;
+      }
     }
 
     b.print();
@@ -302,12 +340,12 @@ bool play_0t(board &b)
 
   if(solvedVar == TANNER_AI_1)
   {
-    cout << TANNER_AI_1 << ", Gavin's AI #1, wins!\n";
+    cout << TANNER_AI_1 << ", Tanner's AI #1, wins!\n";
     return 1;
   }
   else if(solvedVar == TANNER_AI_2)
   {
-    cout << TANNER_AI_2 << ", Gavin's AI #2, wins!\n";
+    cout << TANNER_AI_2 << ", Tanner's AI #2, wins!\n";
     return 1;
   }
 

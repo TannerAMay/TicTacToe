@@ -1,5 +1,7 @@
 #include "play_funcs.h"
 
+//compile commmand from where this file is: g++ -Wall -g *.cpp ../funcs2/*.cpp ../../tanner_AI/ai2/tannerai.cpp ../../tanner_AI/multitree2/*e.cpp -o game
+
 /*Files included at this point
  * <iostream>
  * "coords.h"
@@ -93,7 +95,7 @@ int main()
     numGames--;
   }
 
-  cout << "Thanks for playing." << endl;
+  cout << "\nThanks for playing." << endl;
 
   return 0;
 }

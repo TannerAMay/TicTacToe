@@ -4,7 +4,7 @@ board::board()
 {
   brd = new char *[3];
 
-  for(unsigned int r = 0; r < 3; r++)
+  for(unsigned short r = 0; r < 3; r++)
     brd[r] = new char[3];
 
   reset();
@@ -12,8 +12,8 @@ board::board()
 
 board::~board()
 {
-  for(unsigned int r = 0; r < 3; r++)
-    delete[] brd;
+  for(unsigned short r = 0; r < 3; r++)
+    delete[] brd[r];
 
   delete[] brd;
   brd = nullptr;
@@ -24,18 +24,18 @@ void board::reset()
   if(brd == nullptr)
     throw "Brd not allocated.";
 
-  for(unsigned int r = 0; r < 3; r++)
+  for(unsigned short r = 0; r < 3; r++)
   {
-    for(unsigned int c = 0; c < 3; c++)
+    for(unsigned short c = 0; c < 3; c++)
       brd[r][c] = ' ';
   }
 }
 
 bool board::full() const
 {
-  for(unsigned int r = 0; r < 3; r++)
+  for(unsigned short r = 0; r < 3; r++)
   {
-    for(unsigned int c = 0; c < 3; c++)
+    for(unsigned short c = 0; c < 3; c++)
     {
       if(brd[r][c] == ' ')
         return false;
@@ -47,9 +47,9 @@ bool board::full() const
 
 bool board::empty() const
 {
-  for(unsigned int r = 0; r < 3; r++)
+  for(unsigned short r = 0; r < 3; r++)
   {
-    for(unsigned int c = 0; c < 3; c++)
+    for(unsigned short c = 0; c < 3; c++)
     {
       if(brd[r][c] != ' ')
         return false;
@@ -64,7 +64,7 @@ char board::solved() const
   char checkerChar = '?';
   coords checkers[] = {coords(1, 0), coords(1, 1), coords(1, 2), coords(0, 1), coords(2, 1)};
 
-  for(unsigned int i = 0; i < 5; i++)
+  for(unsigned short i = 0; i < 5; i++)
   {
     if(brd[checkers[i].get_r()][checkers[i].get_c()] != ' ')
     {
@@ -102,15 +102,15 @@ char board::solved() const
   return 'n';
 }
 
-void board::place(const unsigned int r, const unsigned int c, const char player)
+void board::place(const unsigned short r, const unsigned short c, const char player)
 {
-  if(brd[r][c] == ' ' && r < 3 && c < 3)
+  if((brd[r][c] == ' ' || player == ' ') && r < 3 && c < 3)
     brd[r][c] = player;
   else
     throw "Non-empty board location or invalid integer range.";
 }
 
-char board::at(const unsigned int r, const unsigned int c) const
+char board::at(const unsigned short r, const unsigned short c) const
 {
   return brd[r][c];
 }
@@ -120,11 +120,11 @@ void board::print() const
   cout << "   0   1   2 \n";
   cout << "  ___________\n";
 
-  for(unsigned int r = 0; r < 3; r++)
+  for(unsigned short r = 0; r < 3; r++)
   {
     cout << r << "|";
 
-    for(unsigned int c = 0; c < 3; c++)
+    for(unsigned short c = 0; c < 3; c++)
     {
       if(c == 2)
       {
@@ -152,9 +152,9 @@ string board::to_string(const char p) const
 {
   string str = "";
 
-  for(unsigned int r = 0; r < 3; r++)
+  for(unsigned short r = 0; r < 3; r++)
   {
-    for(unsigned int c = 0; c < 3; c++)
+    for(unsigned short c = 0; c < 3; c++)
     {
       if(brd[r][c] == ' ')
         str.push_back('-');
@@ -174,7 +174,7 @@ void board::to_board(const string &s, const char p)
                         coords(1, 0), coords(1, 1), coords(1, 2),
                         coords(2, 0), coords(2, 1), coords(2, 2) };
 
-  for(unsigned int i = 0; i < 9; i++)
+  for(unsigned short i = 0; i < 9; i++)
   {
     if(s[i] == '-')
       brd[crds[i].get_r()][crds[i].get_c()] = ' ';
