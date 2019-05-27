@@ -3,7 +3,7 @@ Tanner May and Gavin Lewis
 
 Made using C++11 on linux
 
-Compile using "g++ mainGame/game/*.cpp mainGame/funcs/*.cpp tanner_AI/ai/tannerai.cpp tanner_AI/multitree/*e.cpp -o game -std=c++11" from the root folder.
+Compile using "g++ mainGame/game/\*.cpp mainGame/funcs/\*.cpp tanner_AI/ai/tannerai.cpp tanner_AI/multitree/\*e.cpp -o game -std=c++11" from the root folder.
 
 TicTacToe game for 0-2 people in the terminal. A joint project between Tanner May and Gavin Lewis. The goal was
 to make two AIs battle each other, like the movie War Games.
